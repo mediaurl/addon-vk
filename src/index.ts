@@ -15,13 +15,6 @@ const getDashboards = async (): Promise<DashboardItem[]> => {
       name: categoryData.title,
     };
   });
-
-  for (const categoryId of Object.keys(categories)) {
-    console.log({
-      categoryId,
-      title: categories[categoryId].title,
-    });
-  }
 };
 
 (async () => {
@@ -29,12 +22,16 @@ const getDashboards = async (): Promise<DashboardItem[]> => {
     id: "vk",
     name: "VK.com",
     version: "0.0.0",
-    icon: "https://www.google.com/s2/favicons?sz=64&domain_url=vk.com",
+    icon:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/VK.com-logo.svg/192px-VK.com-logo.svg.png",
     // Trigger this addon on this kind of items
     itemTypes: ["movie"],
     defaultDirectoryOptions: {
       displayName: true,
       imageShape: "landscape",
+    },
+    defaultDirectoryFeatures: {
+      search: { enabled: true },
     },
     dashboards: await getDashboards(),
   });

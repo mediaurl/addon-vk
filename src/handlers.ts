@@ -1,9 +1,71 @@
-import { WorkerHandlers, MovieItem } from "@watchedcom/sdk";
+import { WorkerHandlers, MovieItem, Source } from "@watchedcom/sdk";
+import { VK, VideoVideo } from "vk-io";
 import { mainPageVideos } from "./vk-popular";
+
+const token = process.env.TOKEN;
+
+const vk = new VK({
+  token,
+  apiVersion: process.env.API_VERSION || "5.120",
+});
+
+const vkApi = vk.api;
+
+const externalFileKeys = ["live", "hls", "external"];
+
+const mapItem = (result: VideoVideo): MovieItem => {
+  const id = `${result.owner_id}_${result.id}`;
+
+  const externalOrLive = Object.keys(result.files).some(
+    (_) => externalFileKeys.indexOf(_) !== -1
+  );
+
+  const sources: Source[] = (externalOrLive
+    ? externalFileKeys
+    : Object.keys(result.files || {})
+  )
+    .filter((label) => !!result.files[label])
+    .map((qualityLabel) => {
+      const url = result.files[qualityLabel];
+      const [_, videoHeight] = qualityLabel.split("_");
+      return {
+        type: "url",
+        name: ["VK.com", videoHeight ? `(${videoHeight}p)` : ""]
+          .filter((_) => _)
+          .join(" "),
+        url,
+        id: `${id}_${qualityLabel}`,
+      };
+    });
+
+  return {
+    type: "movie",
+    ids: {
+      id,
+    },
+    name: result.title,
+    description: result.description,
+    images: {
+      poster: (result.image || []).slice(-1)[0].url,
+    },
+    sources: externalOrLive ? sources.slice(0, 1) : sources,
+  };
+};
 
 export const itemHandler: WorkerHandlers["item"] = async (input, ctx) => {
   console.log("item", input);
-  throw new Error("Not implemented");
+
+  const resp = await vkApi.video.get({
+    videos: input.ids.id as string,
+  });
+
+  const [result] = resp.items;
+
+  if (!result) {
+    throw new Error("Not found");
+  }
+
+  return mapItem(result);
 };
 
 export const directoryHandler: WorkerHandlers["directory"] = async (
@@ -11,6 +73,18 @@ export const directoryHandler: WorkerHandlers["directory"] = async (
   ctx
 ) => {
   console.log("directory", input);
+
+  if (input.search) {
+    const resp = await vkApi.video.search({
+      q: input.search,
+    });
+
+    return {
+      nextCursor: null,
+      items: resp.items.map(mapItem),
+    };
+  }
+
   if (input.rootId === "popular") {
     return {
       nextCursor: null,
