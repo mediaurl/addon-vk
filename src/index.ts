@@ -1,9 +1,9 @@
 import { createWorkerAddon, runCli, DashboardItem } from "@watchedcom/sdk";
 import { itemHandler, directoryHandler } from "./handlers";
-import { mainPageVideos } from "./vk-popular";
+import { getMainPageVideos } from "./vk-popular";
 
 const getDashboards = async (): Promise<DashboardItem[]> => {
-  const categories = await mainPageVideos();
+  const categories = await getMainPageVideos();
   const categoryIds = Object.keys(categories);
 
   return categoryIds.map<DashboardItem>((categoryId) => {
