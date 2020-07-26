@@ -34,6 +34,7 @@ const getDashboards = async (): Promise<DashboardItem[]> => {
     itemTypes: ["movie"],
     defaultDirectoryOptions: {
       displayName: true,
+      imageShape: "landscape",
     },
     dashboards: await getDashboards(),
   });
