@@ -79,6 +79,7 @@ export const directoryHandler: WorkerHandlers["directory"] = async (
   if (input.search) {
     const resp = await vkApi.video.search({
       q: input.search,
+      adult: input.adult,
     });
 
     return {
