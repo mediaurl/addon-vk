@@ -16,9 +16,7 @@ const externalFileKeys = ["live", "hls", "external"];
 const mapItem = (result: VideoVideo): MovieItem => {
   const id = `${result.owner_id}_${result.id}`;
 
-  if (!result.files) {
-    throw new Error("No `files` property in API response");
-  }
+  result.files = result.files || {};
 
   const externalOrLive = Object.keys(result.files).some(
     (_) => externalFileKeys.indexOf(_) !== -1
@@ -26,7 +24,7 @@ const mapItem = (result: VideoVideo): MovieItem => {
 
   const sources: Source[] = (externalOrLive
     ? externalFileKeys
-    : Object.keys(result.files || {})
+    : Object.keys(result.files)
   )
     .filter((label) => !!result.files[label])
     .map((qualityLabel) => {
