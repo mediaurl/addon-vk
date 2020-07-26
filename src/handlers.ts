@@ -74,6 +74,8 @@ export const directoryHandler: WorkerHandlers["directory"] = async (
 ) => {
   console.log("directory", input);
 
+  const category = input.id || "cat_featured";
+
   if (input.search) {
     const resp = await vkApi.video.search({
       q: input.search,
@@ -85,23 +87,19 @@ export const directoryHandler: WorkerHandlers["directory"] = async (
     };
   }
 
-  if (input.rootId === "popular") {
-    return {
-      nextCursor: null,
-      items: (await mainPageVideos())[input.id].list.map<MovieItem>((_) => {
-        return {
-          type: "movie",
-          ids: {
-            id: _.vid,
-          },
-          images: {
-            poster: _.thumb,
-          },
-          name: _.title,
-        };
-      }),
-    };
-  }
-
-  throw new Error("Not implemented");
+  return {
+    nextCursor: null,
+    items: (await mainPageVideos())[category].list.map<MovieItem>((_) => {
+      return {
+        type: "movie",
+        ids: {
+          id: _.vid,
+        },
+        images: {
+          poster: _.thumb,
+        },
+        name: _.title,
+      };
+    }),
+  };
 };
