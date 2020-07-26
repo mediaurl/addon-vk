@@ -11,10 +11,12 @@
   "dependencies": {
     "@watchedcom/sdk": "^0.34.1",
     "encoding": "^0.1.13",
+    "ms": "^2.1.2",
     "node-fetch": "^2.6.0",
     "vk-io": "^4.0.0-rc.30"
   },
   "devDependencies": {
+    "@types/ms": "^0.7.31",
     "@types/node-fetch": "^2.5.7",
     "husky": "^4.2.5",
     "jest": "^26.1.0",

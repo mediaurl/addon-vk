@@ -1,6 +1,6 @@
 import { WorkerHandlers, MovieItem, Source } from "@watchedcom/sdk";
 import { VK, VideoVideo } from "vk-io";
-import { mainPageVideos } from "./vk-popular";
+import { getMainPageVideos } from "./vk-popular";
 
 const token = process.env.TOKEN;
 
@@ -90,7 +90,7 @@ export const directoryHandler: WorkerHandlers["directory"] = async (
 
   return {
     nextCursor: null,
-    items: (await mainPageVideos())[category].list.map<MovieItem>((_) => {
+    items: (await getMainPageVideos())[category].list.map<MovieItem>((_) => {
       return {
         type: "movie",
         ids: {
