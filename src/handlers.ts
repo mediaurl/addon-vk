@@ -84,7 +84,7 @@ export const directoryHandler: WorkerHandlers["directory"] = async (
 
     return {
       nextCursor: null,
-      items: resp.items.map(mapItem),
+      items: (resp.items || []).map(mapItem),
     };
   }
 
