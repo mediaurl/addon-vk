@@ -3,6 +3,7 @@ import { VK, VideoVideo } from "vk-io";
 import { getMainPageVideos } from "./vk-popular";
 
 const token = process.env.TOKEN;
+const pageCount = 20;
 
 const vk = new VK({
   token,
@@ -77,15 +78,18 @@ export const directoryHandler: WorkerHandlers["directory"] = async (
   console.log("directory", input);
 
   const category = input.id || "cat_featured";
+  const offset = (input.cursor as number) || 0;
 
   if (input.search) {
     const resp = await vkApi.video.search({
       q: input.search,
       adult: input.adult ? 1 : 0,
+      count: pageCount,
+      offset,
     });
 
     return {
-      nextCursor: null,
+      nextCursor: offset + pageCount,
       items: (resp.items || []).map(mapItem),
     };
   }
