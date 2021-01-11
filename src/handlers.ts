@@ -1,8 +1,8 @@
-import { WorkerHandlers, MovieItem, Source } from "@watchedcom/sdk";
-import { VK, VideoVideo } from "vk-io";
+import { WorkerHandlers, MovieItem, Source } from "@mediaurl/sdk";
+import { VK, Objects } from "vk-io";
 import { getMainPageVideos } from "./vk-popular";
 
-const token = process.env.TOKEN;
+const token = process.env.TOKEN as string;
 const pageCount = 20;
 
 const vk = new VK({
@@ -14,7 +14,7 @@ const vkApi = vk.api;
 
 const externalFileKeys = ["live", "hls", "external"];
 
-const mapItem = (result: VideoVideo): MovieItem => {
+const mapItem = (result: Objects.VideoVideoFull): MovieItem => {
   const id = `${result.owner_id}_${result.id}`;
 
   result.files = result.files || {};
@@ -27,9 +27,9 @@ const mapItem = (result: VideoVideo): MovieItem => {
     ? externalFileKeys
     : Object.keys(result.files)
   )
-    .filter((label) => !!result.files[label])
+    .filter((label) => !!result.files?.[label])
     .map((qualityLabel) => {
-      const url = result.files[qualityLabel];
+      const url = result.files?.[qualityLabel];
       const [_, videoHeight] = qualityLabel.split("_");
       return {
         type: "url",

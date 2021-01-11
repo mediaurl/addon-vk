@@ -1,4 +1,4 @@
-import { createWorkerAddon, runCli, DashboardItem } from "@watchedcom/sdk";
+import { createWorkerAddon, runCli, DashboardItem } from "@mediaurl/sdk";
 import { itemHandler, directoryHandler } from "./handlers";
 import { getMainPageVideos } from "./vk-popular";
 
