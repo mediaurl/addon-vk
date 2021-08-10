@@ -1,4 +1,4 @@
-import { WorkerHandlers, MovieItem, Source } from "@mediaurl/sdk";
+import { ActionHandlers, MovieItem, Source } from "@mediaurl/sdk";
 import { VK, Objects } from "vk-io";
 import { getMainPageVideos } from "./vk-popular";
 
@@ -54,7 +54,7 @@ const mapItem = (result: Objects.VideoVideoFull): MovieItem => {
   };
 };
 
-export const itemHandler: WorkerHandlers["item"] = async (input, ctx) => {
+export const itemHandler: ActionHandlers["item"] = async (input, ctx) => {
   console.log("item", input);
 
   const resp = await vkApi.video.get({
@@ -70,11 +70,8 @@ export const itemHandler: WorkerHandlers["item"] = async (input, ctx) => {
   return mapItem(result);
 };
 
-export const catalogHandler: WorkerHandlers["directory"] = async (
-  input,
-  ctx
-) => {
-  console.log("directory", input);
+export const catalogHandler: ActionHandlers["catalog"] = async (input, ctx) => {
+  console.log("catalog", input);
 
   const category = input.id || "cat_featured";
   const offset = (input.cursor as number) || 0;
