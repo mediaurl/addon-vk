@@ -1,5 +1,5 @@
-import { createWorkerAddon, runCli, DashboardItem } from "@mediaurl/sdk";
-import { itemHandler, directoryHandler } from "./handlers";
+import { createAddon, runCli, DashboardItem } from "@mediaurl/sdk";
+import { itemHandler, catalogHandler } from "./handlers";
 import { getMainPageVideos } from "./vk-popular";
 
 const getDashboards = async (): Promise<DashboardItem[]> => {
@@ -13,31 +13,32 @@ const getDashboards = async (): Promise<DashboardItem[]> => {
       id: categoryData.id,
       rootId: `popular`,
       name: categoryData.title,
+      options: {
+        displayName: true,
+        imageShape: "landscape",
+      },
+      features: {
+        search: {
+          enabled: true,
+        },
+      },
     };
   });
 };
 
 (async () => {
-  const vkAddon = createWorkerAddon({
+  const vkAddon = createAddon({
     id: "vk",
     name: "VK.com",
     version: "0.0.0",
-    icon:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/VK.com-logo.svg/192px-VK.com-logo.svg.png",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/VK.com-logo.svg/192px-VK.com-logo.svg.png",
     // Trigger this addon on this kind of items
     itemTypes: ["movie"],
-    defaultDirectoryOptions: {
-      displayName: true,
-      imageShape: "landscape",
-    },
-    defaultDirectoryFeatures: {
-      search: { enabled: true },
-    },
     dashboards: await getDashboards(),
   });
 
   vkAddon.registerActionHandler("item", itemHandler);
-  vkAddon.registerActionHandler("directory", directoryHandler);
+  vkAddon.registerActionHandler("catalog", catalogHandler);
 
   runCli([vkAddon]);
 })();

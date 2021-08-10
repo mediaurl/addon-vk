@@ -23,9 +23,8 @@ const mapItem = (result: Objects.VideoVideoFull): MovieItem => {
     (_) => externalFileKeys.indexOf(_) !== -1
   );
 
-  const sources: Source[] = (externalOrLive
-    ? externalFileKeys
-    : Object.keys(result.files)
+  const sources: Source[] = (
+    externalOrLive ? externalFileKeys : Object.keys(result.files)
   )
     .filter((label) => !!result.files?.[label])
     .map((qualityLabel) => {
@@ -71,7 +70,7 @@ export const itemHandler: WorkerHandlers["item"] = async (input, ctx) => {
   return mapItem(result);
 };
 
-export const directoryHandler: WorkerHandlers["directory"] = async (
+export const catalogHandler: WorkerHandlers["directory"] = async (
   input,
   ctx
 ) => {
